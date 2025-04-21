@@ -28,11 +28,13 @@ final class UserModel
 
     public function buildQueryList($params=null) {
         $getQuery = $this->db()->table('users');
-        $getQuery->where('role', '!=', 'superadmin');
+        $getQuery->select($getQuery->raw('users.*, jabatan.nama as jabatan'));
+        $getQuery->where('users.role', '!=', 'superadmin');
+        $getQuery->leftJoin('jabatan', 'jabatan.id', '=', 'users.jabatan_id');
         
         if(!empty($params['keywords'])) {
             $keywords = $params['keywords'];
-            $getQuery->where('users_petugas.nama', 'LIKE', "%$keywords%");
+            $getQuery->where('users.nama', 'LIKE', "%$keywords%");
         }
 
         return $getQuery;
@@ -122,13 +124,9 @@ final class UserModel
         $checkData = $this->db()->table('users')->whereIn('id', $listId)->get();
 
         if (!empty($checkData)) {
-            $totalSuccess = 0;
-            foreach ($checkData as $data) {
-                $process = $this->db()->table('users')->where('id', $id)->delete();
-                $totalSuccess += $process ? 1 : 0;
-            }
+            $process = $this->db()->table('users')->whereIn('id', $listId)->delete();
 
-            if ($totalSuccess) {
+            if ($process) {
                 $result                 = ['status' => true, 'message' => 'Data berhasil dihapus'];
             }
         }

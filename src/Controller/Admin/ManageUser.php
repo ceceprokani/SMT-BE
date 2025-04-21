@@ -72,7 +72,7 @@ final class ManageUser
     {
         $post                   = $request->getParsedBody();
 
-        $post['role']           = 'admin';
+        $post['role']           = 'staff';
         $result                 = $this->userModel->save($post);
 
         return JsonResponse::withJson($response, $result, 200);
@@ -81,6 +81,12 @@ final class ManageUser
     public function delete(Request $request, Response $response, $parameters): Response
     {
         $result = $this->userModel->delete($parameters['id']);
+        return JsonResponse::withJson($response, $result, 200);
+    }
+
+    public function bulkDelete(Request $request, Response $response): Response
+    {
+        $result = $this->userModel->deleteBatch($request->getParsedBody());
         return JsonResponse::withJson($response, $result, 200);
     }
 }
