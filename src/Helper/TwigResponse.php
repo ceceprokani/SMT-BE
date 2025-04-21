@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Helper;
+
+use Slim\Views\Twig;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+
+final class TwigResponse
+{
+    public static function render(Request $request, Response $response, string $template, array $data, int $status = 200)
+    {
+        $view = Twig::fromRequest($request);
+
+        if (!empty($_SERVER['APP_BASE_URL'])) {
+            $data['baseurl'] = $_SERVER['APP_BASE_URL'];
+            $data['baseurl'] .= (substr($data['baseurl'], -1) == '/' ? '' : '/');
+        } else {
+            $http = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 's' : '') . '://';
+            $newurl = str_replace("index.php", "", $_SERVER['SCRIPT_NAME']);
+            $data['baseurl']    = "$http" . $_SERVER['SERVER_NAME'] . "" . $newurl;
+
+            if(in_array($_SERVER['REMOTE_ADDR'], array('127.0.0.1', '::1', 'localhost'))){
+                $data['baseurl']    = "$http" . $_SERVER['SERVER_NAME'] . ":" . $_SERVER['SERVER_PORT'] . "" . $newurl;
+            }
+        }
+
+        return $view->render($response, $template, $data);
+    }
+}
