@@ -47,4 +47,18 @@ final class MasterData
         
         return JsonResponse::withJson($response, $result, 200);
     }
+
+    public function listUser(Request $request, Response $response): Response
+    {
+        $params = $request->getQueryParams();
+        $result = ['status' => false, 'message' => 'Data tidak ditemukan', 'data' => array()];
+        $params['role'] = 'staff';
+        $list   = $this->model->listUser($params);
+
+        if (!empty($list)) {
+            $result = ['status' => true, 'message' => 'Data ditemukan', 'data' => $list];
+        }
+        
+        return JsonResponse::withJson($response, $result, 200);
+    }
 }

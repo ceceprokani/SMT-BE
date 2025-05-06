@@ -104,7 +104,7 @@ final class UserModel
             }
 
             if (!empty($process)) {
-                $result                 = ['status' => true, 'message' => 'Data gagal disimpan'];
+                $result                 = ['status' => true, 'message' => 'Data berhasil disimpan'];
             }
         }
 

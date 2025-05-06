@@ -5,10 +5,9 @@ declare(strict_types=1);
 use Slim\Routing\RouteCollectorProxy;
 
 use App\Controller\{
-    MasterData
-};
-use App\Controller\{
+    MasterData,
     ManageUser,
+    Task
 };
 
 /* ------------------------------ General Routes ------------------------------ */
@@ -45,8 +44,12 @@ $app->get('/testgetdata', 'App\Controller\Hello:testConnectFetchData');
 
 $app->group('/master-data', function (RouteCollectorProxy $group) {
     $group->get('/jabatan', [MasterData::class, 'listJabatan']);
+    $group->get('/list-user', [MasterData::class, 'listUSer']);
 });
 /* --------------------------------------------------------------------------- */
 
 /* ------------------------------ Super Admin Routes ------------------------------ */
 routes($app, 'manage-user', ManageUser::class);
+
+$app->post('/task/update-status', [Task::class, 'updateStatus']);
+routes($app, 'task', Task::class);

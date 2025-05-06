@@ -26,4 +26,10 @@ final class MasterDataModel
 
         return $result;
     }
+
+    public function listUser() {
+        $result = $this->db()->table('users')->select('id', 'nama')->where('role', 'staff')->orderBy('nama', 'asc')->get();
+
+        return $result;
+    }
 }
