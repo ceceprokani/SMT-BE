@@ -26,7 +26,7 @@ final class User
         $this->auth                 = new AuthModel($this->container->get('db'));
         $this->user                 = $this->auth->validateToken();
 
-        $roles                      = array('superadmin','admin','staff','customer');
+        $roles                      = array('superadmin','admin','staff');
 
         if(!in_array($this->user->role, $roles)) {
             $this->auth->denyAccess();

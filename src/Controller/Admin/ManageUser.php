@@ -27,7 +27,7 @@ final class ManageUser
         $this->userModel            = new UserModel($this->container->get('db'));
         $this->user                 = $this->auth->validateToken();
 
-        $roles                      = array('superadmin');
+        $roles                      = array('superadmin', 'admin');
 
         if(!in_array($this->user->role, $roles)) {
             $this->auth->denyAccess();

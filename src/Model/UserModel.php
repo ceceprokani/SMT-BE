@@ -60,6 +60,15 @@ final class UserModel
         return ['data' => $list, 'total' => $totalData];
     }
 
+    public function detail($id) {
+        $result = $this->db()->table('users')
+                    ->select($this->db()->raw('id, nama, email, telepon, jabatan_id, alamat, status'))
+                    ->where('id', $id)
+                    ->first();
+
+        return $result;
+    }
+
     public function save($params) {
         $result                 = ['status' => false, 'message' => 'Data gagal disimpan'];
         
