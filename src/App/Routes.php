@@ -7,7 +7,7 @@ use Slim\Routing\RouteCollectorProxy;
 use App\Controller\{
     MasterData
 };
-use App\Controller\Admin\{
+use App\Controller\{
     ManageUser,
 };
 
