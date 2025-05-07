@@ -100,6 +100,19 @@ final class Task
         return JsonResponse::withJson($response, $result, 200);
     }
 
+    public function statistic(Request $request, Response $response): Response
+    {
+        $params = $request->getQueryParams();
+        $result = ['status' => false, 'message' => 'Data tidak ditemukan', 'data' => array()];
+        $list = $this->model->statistic($this->user->id);
+
+        if (!empty($list)) {
+            $result = ['status' => true, 'message' => 'Data ditemukan', 'data' => $list];
+        }
+
+        return JsonResponse::withJson($response, $result, 200);
+    }
+
     public function discussion(Request $request, Response $response): Response
     {
         $params = $request->getQueryParams();

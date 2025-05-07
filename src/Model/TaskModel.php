@@ -30,7 +30,9 @@ final class TaskModel
             $qb->orWhere('tugas_penerima.user_id', $params['user_id']);
         });
         
-        if(!empty($params['keywords'])) {
+        if(!empty($params['status'])) {
+            $getQuery->where('status', $params['status']);
+        } if(!empty($params['keywords'])) {
             $keywords = $params['keywords'];
             $getQuery->where('users.nama', 'LIKE', "%$keywords%");
         }
@@ -60,6 +62,7 @@ final class TaskModel
             $getPenerimaTugas = $this->db()->table('users')->where('id', $row->penerima_tugas_id)->first();
             $row->pemberi_tugas = $getPemberiTugas->nama ?? '';
             $row->penerima_tugas = $getPenerimaTugas->nama ?? '';
+            $row->is_own = $row->user_id == $params['user_id'];
         }
 
         return ['data' => $list, 'total' => $totalData];
@@ -203,5 +206,32 @@ final class TaskModel
         }
 
         return $result;
+    }
+
+    public function statistic($userId) {
+        $getQuery = $this->db()->table('tugas');
+        $getQuery->select($getQuery->raw('tugas.*, tugas_penerima.user_id as penerima_tugas_id'));
+        $getQuery->join('tugas_penerima', 'tugas.id', '=', 'tugas_penerima.tugas_id');
+        $getQuery->where(function(\Pecee\Pixie\QueryBuilder\QueryBuilderHandler $qb) use ($userId) {
+            $qb->where('tugas.user_id', $userId);
+            $qb->orWhere('tugas_penerima.user_id', $userId);
+        });
+        $list = $getQuery->get();
+
+        $statistic = [
+            'todo' => 0,
+            'progress' => 0,
+            'done' => 0,
+            'all' => 0
+        ];
+
+        if (!empty($list)) {
+            foreach ($list as $row) {
+                $statistic[$row->status]++;
+                $statistic['all']++;
+            }
+        }
+
+        return $statistic;
     }
 }
