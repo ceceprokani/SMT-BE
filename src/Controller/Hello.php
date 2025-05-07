@@ -9,18 +9,20 @@ use App\Helper\TwigResponse;
 use Pimple\Psr11\Container;
 
 use App\Model\UserModel;
+use App\Helper\General;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class Hello
 {
-    private $container, $userModel;
+    private $container, $userModel, $general;
     
     public function __construct(Container $container)
     {
         $this->container    = $container;
         $this->userModel    = new UserModel($this->container->get('db'));
+        $this->general      = new General($this->container);
     }
 
     public function getStatusAPI(Request $request, Response $response): Response
@@ -37,6 +39,16 @@ final class Hello
         $result['status']   = true;
         $result['message']  = "Data ditemukan";
         $result['data']     = $this->userModel->countUser();
+
+        return JsonResponse::withJson($response, $result, 200);
+    }
+
+    public function testNotification(Request $request, Response $response): Response
+    {
+        $result['status']   = true;
+        $result['message']  = "Data ditemukan";
+        // $result['data']     = $this->general->sendNotificationToSlack('Halo dari Slim PHP 🎉 http://localhost:5173/#/task/detail/4');
+        $result['data']     = $this->general->sendMessagePrivate('cecepfahriazal1997@gmail.com', 'Hei ada task baru lhoo!!');
 
         return JsonResponse::withJson($response, $result, 200);
     }

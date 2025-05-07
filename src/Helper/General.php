@@ -80,6 +80,66 @@ final class General {
             return "$tanggal $bulan $tahun" . " " . $jam;
         }
     }
+
+    public function sendNotificationToSlack($text) {
+        $webhookUrl = 'https://hooks.slack.com/services/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';
+        // $webhookUrl = 'https://hooks.slack.com/services/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';
+
+        $payload = json_encode([
+            'text' => $text,
+            'username' => 'BOT SMT',
+        ]);
+
+        $ch = curl_init($webhookUrl);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return $result;
+    }
+
+    public function sendMessagePrivate($email, $text) {
+        $token = 'xoxb-7027763816992-7027772399216-zkNqtKZAv1apIbM1i2namLRK';
+
+        $ch = curl_init('https://slack.com/api/users.list');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer $token"
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $data = json_decode($response, true);
+
+        // Misalnya cari user dengan email tertentu
+        foreach ($data['members'] as $user) {
+            if (!empty($user['profile']['email']) && $user['profile']['email'] === $email) {
+                $payload = json_encode([
+                    'channel' => $user['id'],
+                    'text' => $text,
+                ]);
+
+                $ch = curl_init('https://slack.com/api/chat.postMessage');
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                    "Authorization: Bearer $token",
+                    "Content-Type: application/json"
+                ]);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+                $result = curl_exec($ch);
+                curl_close($ch);
+
+                break;
+            }
+        }
+    }
 }
 
 ?>

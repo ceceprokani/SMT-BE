@@ -43,6 +43,7 @@ $app->get('/diagnostic', 'App\Controller\Hello:getDiagnostic')->setName('diagnos
 
 // Test Connect Database
 $app->get('/testgetdata', 'App\Controller\Hello:testConnectFetchData');
+$app->get('/test-notification', 'App\Controller\Hello:testNotification');
 
 $app->group('/master-data', function (RouteCollectorProxy $group) {
     $group->get('/jabatan', [MasterData::class, 'listJabatan']);
