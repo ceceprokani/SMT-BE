@@ -249,4 +249,34 @@ final class TaskModel
 
         return $statistic;
     }
+
+    public function statisticByMonth($userId) {
+        $getQuery = $this->db()->table('tugas');
+        $getQuery->select($getQuery->raw('tugas.*, tugas_penerima.user_id as penerima_tugas_id'));
+        $getQuery->join('tugas_penerima', 'tugas.id', '=', 'tugas_penerima.tugas_id');
+        
+        $getQuery->where($getQuery->raw('YEAR(tugas.created_at)'), $getQuery->raw('YEAR(NOW())'));
+        
+        if (!empty($params['user_id'])) {
+            $getQuery->where(function(\Pecee\Pixie\QueryBuilder\QueryBuilderHandler $qb) use ($params) {
+                $qb->where('tugas.user_id', $params['user_id']);
+                $qb->orWhere('tugas_penerima.user_id', $params['user_id']);
+            });
+        }
+
+        $list = $getQuery->get();
+
+        $statistic = [];
+
+        foreach ($list as $row) {
+            $month  = (int) date('m', strtotime($row->created_at));
+
+            if (!isset($statistic[$month]))
+                $statistic[$month] = 0;
+            
+            $statistic[$month]++;
+        }
+
+        return $statistic;
+    }
 }

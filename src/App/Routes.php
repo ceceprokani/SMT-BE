@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Slim\Routing\RouteCollectorProxy;
 
 use App\Controller\{
+    Dashboard,
     MasterData,
     ManageUser,
     Task,
@@ -51,6 +52,8 @@ $app->group('/master-data', function (RouteCollectorProxy $group) {
 
 /* ------------------------------ Super Admin Routes ------------------------------ */
 routes($app, 'manage-user', ManageUser::class);
+
+$app->get('/dashboard/statistic', [Dashboard::class, 'statistic']);
 
 $app->get('/task/statistic', [Task::class, 'statistic']);
 $app->get('/task/discussion', [Task::class, 'discussion']);
