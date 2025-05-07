@@ -224,10 +224,10 @@ final class TaskModel
         $getQuery->select($getQuery->raw('tugas.*, tugas_penerima.user_id as penerima_tugas_id'));
         $getQuery->join('tugas_penerima', 'tugas.id', '=', 'tugas_penerima.tugas_id');
         
-        if (!empty($params['user_id'])) {
-            $getQuery->where(function(\Pecee\Pixie\QueryBuilder\QueryBuilderHandler $qb) use ($params) {
-                $qb->where('tugas.user_id', $params['user_id']);
-                $qb->orWhere('tugas_penerima.user_id', $params['user_id']);
+        if (!empty($userId)) {
+            $getQuery->where(function(\Pecee\Pixie\QueryBuilder\QueryBuilderHandler $qb) use ($userId) {
+                $qb->where('tugas.user_id', $userId);
+                $qb->orWhere('tugas_penerima.user_id', $userId);
             });
         }
 
