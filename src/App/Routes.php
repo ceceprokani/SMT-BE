@@ -59,3 +59,4 @@ $app->post('/task/update-status', [Task::class, 'updateStatus']);
 routes($app, 'task', Task::class);
 
 $app->get('/report', [Report::class, 'index']);
+$app->get('/report/download', [Report::class, 'download']);

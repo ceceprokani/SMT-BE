@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .table-border {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        .table-border th {
+            border: 1px solid black;
+            border-collapse: collapse;
+            background-color: #d0d0d0;
+            font-size: 12px;
+            padding: 5px;
+        }
+        .table-border td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            font-size: 12px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <table width="100%">
+        <tr>
+            <td width="10%"><img src="var:logo" width="70" /></td>
+            <td style="line-height: 20pt">
+                <h4>PT. XYZ</h4>
+                <div>Jl. Bahagia Timur</div>
+            </td>
+        </tr>
+    </table>
+    <hr style="margin-bottom: 0px" />
+    <hr style="margin-top: 1px" />
+    <h3 align="center">LAPORAN</h3>
+    <table width="100%" class="table-border">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Pemberi Tugas</th>
+                <th>Penerima Tugas</th>
+                <th>Deksripsi Tugas</th>
+                <th>Status</th>
+                <th>Prioritas</th>
+                <th>Tanggal Permintaan</th>
+                <th>Tanggal Deadline</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in data.data %}
+            <tr>
+                <td style="text-align: center">{{ loop.index }}</td>
+                <td>{{ item.pemberi_tugas }}</td>
+                <td>{{ item.penerima_tugas }}</td>
+                <td>{{ item.deskripsi }}</td>
+                <td style="font-weight: bold; color: white; background: {{ item.status == 'todo' ? '#C5172E' : item.status == 'progress' ? '#E9A319' : '#328E6E' }}">
+                    {% if item.status == 'todo' %}<span>BELUM DIKERJAKAN</span>{% endif %}
+                    {% if item.status == 'progress' %}<span>SEDANG DIKERJAKAN</span>{% endif %}
+                    {% if item.status == 'done' %}<span>SUDAH DIKERJAKAN</span>{% endif %}
+                </td>
+                <td style="text-transform: uppercase; text-align: center">{{ item.prioritas }}</td>
+                <td style="text-transform: uppercase; text-align: center">{{ item.created_at }}</td>
+                <td style="text-transform: uppercase; text-align: center">{{ item.deadline }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
