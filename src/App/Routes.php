@@ -51,5 +51,7 @@ $app->group('/master-data', function (RouteCollectorProxy $group) {
 /* ------------------------------ Super Admin Routes ------------------------------ */
 routes($app, 'manage-user', ManageUser::class);
 
+$app->get('/task/discussion', [Task::class, 'discussion']);
+$app->post('/task/save-discussion', [Task::class, 'saveDiscussion']);
 $app->post('/task/update-status', [Task::class, 'updateStatus']);
 routes($app, 'task', Task::class);

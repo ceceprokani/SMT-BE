@@ -174,4 +174,34 @@ final class TaskModel
 
         return $result;
     }
+
+    public function listDiscussion($userId, $taskId) {
+        $list = $this->db()->table('diskusi')
+                        ->select($this->db()->raw('diskusi.*, users.nama as nama_user'))
+                        ->join('users', 'users.id', '=', 'diskusi.user_id')
+                        ->where('tugas_id', $taskId)
+                        ->get();
+
+        foreach ($list as $row) {
+            $row->is_own = $userId == $row->user_id;
+        }
+
+        return $list;
+    }
+
+    public function saveDiscussion($taskId, $userId, $message) {
+        $result                 = ['status' => false, 'message' => 'Data gagal dihapus'];
+        $process = $this->db()->table('diskusi')->insert([
+            'tugas_id' => $taskId,
+            'user_id' => $userId,
+            'pesan' => $message,
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
+
+        if (!empty($process)) {
+            $result                 = ['status' => true, 'message' => 'Data berhasil dihapus'];
+        }
+
+        return $result;
+    }
 }

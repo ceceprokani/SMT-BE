@@ -99,4 +99,25 @@ final class Task
         $result = $this->model->deleteBatch($request->getParsedBody());
         return JsonResponse::withJson($response, $result, 200);
     }
+
+    public function discussion(Request $request, Response $response): Response
+    {
+        $params = $request->getQueryParams();
+        $result = ['status' => false, 'message' => 'Data tidak ditemukan', 'data' => array()];
+        $list = $this->model->listDiscussion($this->user->id, $params['tugas_id']);
+
+        if (!empty($list)) {
+            $result = ['status' => true, 'message' => 'Data ditemukan', 'data' => $list];
+        }
+
+        return JsonResponse::withJson($response, $result, 200);
+    }
+
+    public function saveDiscussion(Request $request, Response $response): Response
+    {
+        $body = $request->getParsedBody();
+        $result = $this->model->saveDiscussion($body['tugas_id'], $this->user->id, $body['pesan']);
+        
+        return JsonResponse::withJson($response, $result, 200);
+    }
 }
