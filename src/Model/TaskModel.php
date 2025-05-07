@@ -25,10 +25,13 @@ final class TaskModel
         $getQuery = $this->db()->table('tugas');
         $getQuery->select($getQuery->raw('tugas.*, tugas_penerima.user_id as penerima_tugas_id'));
         $getQuery->join('tugas_penerima', 'tugas.id', '=', 'tugas_penerima.tugas_id');
-        $getQuery->where(function(\Pecee\Pixie\QueryBuilder\QueryBuilderHandler $qb) use ($params) {
-            $qb->where('tugas.user_id', $params['user_id']);
-            $qb->orWhere('tugas_penerima.user_id', $params['user_id']);
-        });
+
+        if (!empty($params['user_id'])) {
+            $getQuery->where(function(\Pecee\Pixie\QueryBuilder\QueryBuilderHandler $qb) use ($params) {
+                $qb->where('tugas.user_id', $params['user_id']);
+                $qb->orWhere('tugas_penerima.user_id', $params['user_id']);
+            });
+        }
         
         if(!empty($params['status'])) {
             $getQuery->where('status', $params['status']);
@@ -62,7 +65,10 @@ final class TaskModel
             $getPenerimaTugas = $this->db()->table('users')->where('id', $row->penerima_tugas_id)->first();
             $row->pemberi_tugas = $getPemberiTugas->nama ?? '';
             $row->penerima_tugas = $getPenerimaTugas->nama ?? '';
-            $row->is_own = $row->user_id == $params['user_id'];
+            $row->is_own = true;
+
+            if (!empty($params['user_id']))
+                $row->is_own = $row->user_id == $params['user_id'];
         }
 
         return ['data' => $list, 'total' => $totalData];
@@ -212,10 +218,14 @@ final class TaskModel
         $getQuery = $this->db()->table('tugas');
         $getQuery->select($getQuery->raw('tugas.*, tugas_penerima.user_id as penerima_tugas_id'));
         $getQuery->join('tugas_penerima', 'tugas.id', '=', 'tugas_penerima.tugas_id');
-        $getQuery->where(function(\Pecee\Pixie\QueryBuilder\QueryBuilderHandler $qb) use ($userId) {
-            $qb->where('tugas.user_id', $userId);
-            $qb->orWhere('tugas_penerima.user_id', $userId);
-        });
+        
+        if (!empty($params['user_id'])) {
+            $getQuery->where(function(\Pecee\Pixie\QueryBuilder\QueryBuilderHandler $qb) use ($params) {
+                $qb->where('tugas.user_id', $params['user_id']);
+                $qb->orWhere('tugas_penerima.user_id', $params['user_id']);
+            });
+        }
+
         $list = $getQuery->get();
 
         $statistic = [

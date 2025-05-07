@@ -39,7 +39,8 @@ final class Task
         $params = $request->getQueryParams();
         $result = ['status' => false, 'message' => 'Data tidak ditemukan', 'data' => array()];
 
-        $params['user_id'] = $this->user->id;
+        if (!in_array($this->user->role, ['superadmin', 'admin']))
+            $params['user_id'] = $this->user->id;
 
         $list   = $this->model->list($params);
 
@@ -104,7 +105,7 @@ final class Task
     {
         $params = $request->getQueryParams();
         $result = ['status' => false, 'message' => 'Data tidak ditemukan', 'data' => array()];
-        $list = $this->model->statistic($this->user->id);
+        $list = $this->model->statistic(!in_array($this->user->role, ['superadmin', 'admin']) ? $this->user->id : null);
 
         if (!empty($list)) {
             $result = ['status' => true, 'message' => 'Data ditemukan', 'data' => $list];
