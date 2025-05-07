@@ -7,7 +7,8 @@ use Slim\Routing\RouteCollectorProxy;
 use App\Controller\{
     MasterData,
     ManageUser,
-    Task
+    Task,
+    Report
 };
 
 /* ------------------------------ General Routes ------------------------------ */
@@ -56,3 +57,5 @@ $app->get('/task/discussion', [Task::class, 'discussion']);
 $app->post('/task/save-discussion', [Task::class, 'saveDiscussion']);
 $app->post('/task/update-status', [Task::class, 'updateStatus']);
 routes($app, 'task', Task::class);
+
+$app->get('/report', [Report::class, 'index']);

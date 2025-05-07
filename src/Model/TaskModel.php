@@ -33,11 +33,16 @@ final class TaskModel
             });
         }
         
-        if(!empty($params['status'])) {
+        if(!empty($params['prioritas'])) {
+            $getQuery->where('prioritas', $params['prioritas']);
+        } if(!empty($params['status'])) {
             $getQuery->where('status', $params['status']);
+        } if(!empty($params['dateRange'])) {
+            $tmpDateRange = explode(' to ', $params['dateRange']);
+            $getQuery->whereBetween('deadline', ...$tmpDateRange);
         } if(!empty($params['keywords'])) {
             $keywords = $params['keywords'];
-            $getQuery->where('users.nama', 'LIKE', "%$keywords%");
+            $getQuery->where('deskripsi', 'LIKE', "%$keywords%");
         }
 
         $getQuery->orderBy('tugas.deadline', 'asc');
