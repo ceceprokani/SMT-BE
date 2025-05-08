@@ -24,7 +24,7 @@ final class Dashboard
     {
         $this->container = $container;
         $this->auth                 = new AuthModel($this->container->get('db'));
-        $this->taskModel            = new TaskModel($this->container->get('db'));
+        $this->taskModel            = new TaskModel($this->container);
         $this->user                 = $this->auth->validateToken();
 
         $roles                      = array('superadmin', 'admin', 'staff');

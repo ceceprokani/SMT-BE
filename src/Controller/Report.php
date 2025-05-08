@@ -29,7 +29,7 @@ final class Report
     {
         $this->container = $container;
         $this->auth                 = new AuthModel($this->container->get('db'));
-        $this->model                = new TaskModel($this->container->get('db'));
+        $this->model                = new TaskModel($this->container);
         $this->general              = new General($this->container);
         $this->user                 = $this->auth->validateToken();
 

@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use Pimple\Psr11\Container;
 use Exception;
+
+use App\Helper\General;
 
 final class TaskModel
 {
-    protected $database;
+    protected $database, $general;
 
     protected function db()
     {
@@ -16,9 +19,10 @@ final class TaskModel
         return $pdo;
     }
 
-    public function __construct(\Pecee\Pixie\Connection $database)
+    public function __construct(Container $container)
     {
-        $this->database       = $database;
+        $this->database         = $container->get('db');
+        $this->general          = new General($container);
     }
 
     public function buildQueryList($params=null) {
@@ -129,10 +133,16 @@ final class TaskModel
             ];
 
             if (!empty($params['tugas_detail_id'])) {
-                $this->db()->table('tugas_penerima')->where('id', $params['tugas_detail_id'])->update($dataDetail);
+                $process = $this->db()->table('tugas_penerima')->where('id', $params['tugas_detail_id'])->update($dataDetail);
             } else {
                 $dataDetail = array_merge(['created_at' => date('Y-m-d H:i:s')], $dataDetail);
-                $this->db()->table('tugas_penerima')->insert($dataDetail);
+                $process = $this->db()->table('tugas_penerima')->insert($dataDetail);
+            }
+
+            if ($process) {
+                $detailPenerima = $this->db()->table('users')->where('id', $params['penerima_tugas_id'])->first();
+                // send notification
+                $this->general->sendMessagePrivate($detailPenerima->email, 'Hei ada tugas baru yang ditujukan kepadamu. Lihat detail tugas pada link ini http://localhost:5173/#/task/detail/' . $lastId);
             }
 
             $result                 = ['status' => true, 'message' => 'Data berhasil disimpan'];
@@ -194,6 +204,7 @@ final class TaskModel
                         ->select($this->db()->raw('diskusi.*, users.nama as nama_user'))
                         ->join('users', 'users.id', '=', 'diskusi.user_id')
                         ->where('tugas_id', $taskId)
+                        ->orderBy('created_at', 'asc')
                         ->get();
 
         foreach ($list as $row) {

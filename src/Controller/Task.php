@@ -22,9 +22,9 @@ final class Task
     
     public function __construct(Container $container)
     {
-        $this->container = $container;
+        $this->container            = $container;
         $this->auth                 = new AuthModel($this->container->get('db'));
-        $this->model                = new TaskModel($this->container->get('db'));
+        $this->model                = new TaskModel($this->container);
         $this->user                 = $this->auth->validateToken();
 
         $roles                      = array('superadmin', 'admin', 'staff');
