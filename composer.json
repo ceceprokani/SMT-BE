@@ -14,7 +14,6 @@
         "mpdf/mpdf": "^8.2",
         "nyholm/psr7": "^1.4",
         "pecee/pixie": "^4.15",
-        "phpoffice/phpspreadsheet": "^3.0",
         "pimple/pimple": "^3.2",
         "predis/predis": "^2.0",
         "robmorgan/phinx": "^0.15.5",

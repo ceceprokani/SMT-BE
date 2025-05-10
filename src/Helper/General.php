@@ -5,11 +5,6 @@ namespace App\Helper;
 use Pimple\Psr11\Container;
 use Slim\Views\Twig;
 
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Reader\Html;
-use PhpOffice\PhpSpreadsheet\Shared\File;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 final class General {
