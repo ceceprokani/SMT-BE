@@ -98,7 +98,7 @@ final class General {
     }
 
     public function sendMessagePrivate($email, $text) {
-        $token = 'xoxb-7027763816992-7027772399216-zkNqtKZAv1apIbM1i2namLRK';
+        $token = $_ENV['SLACK_KEY'] ?: $_SERVER['SLACK_KEY'];
 
         $ch = curl_init('https://slack.com/api/users.list');
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
