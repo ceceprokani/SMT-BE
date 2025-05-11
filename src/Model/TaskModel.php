@@ -163,7 +163,7 @@ final class TaskModel
                 if ($status == 'done') {
                     $checkDataPenerima = $this->db()->table('tugas_penerima')->where('id', $id)->first();
                     if (!empty($checkDataPenerima)) {
-                        $detailPenerima = $this->db()->table('users')->where('id', $checkDataPenerima->penerima_tugas_id)->first();
+                        $detailPenerima = $this->db()->table('users')->where('id', $checkDataPenerima->user_id)->first();
                         // send notification
                         $this->general->sendMessagePrivate($detailPenerima->email, 'Ada tugas yang telah diselesaikan!. Lihat detail tugas pada link ini '. ($_ENV['APP_FRONTEND_URL'] ?: $_SERVER['APP_FRONTEND_URL']) .'/#/task/detail/' . $id);
                     }
