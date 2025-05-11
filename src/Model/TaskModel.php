@@ -142,7 +142,7 @@ final class TaskModel
             if ($process) {
                 $detailPenerima = $this->db()->table('users')->where('id', $params['penerima_tugas_id'])->first();
                 // send notification
-                $this->general->sendMessagePrivate($detailPenerima->email, 'Hei ada tugas baru yang ditujukan kepadamu. Lihat detail tugas pada link ini http://localhost:5173/#/task/detail/' . $lastId);
+                $this->general->sendMessagePrivate($detailPenerima->email, 'Hei ada tugas baru yang ditujukan kepadamu. Lihat detail tugas pada link ini '. ($_ENV['APP_BASE_URL'] ?: $_SERVER['APP_BASE_URL']) .'/#/task/detail/' . $lastId);
             }
 
             $result                 = ['status' => true, 'message' => 'Data berhasil disimpan'];
