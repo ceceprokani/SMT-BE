@@ -160,6 +160,12 @@ final class TaskModel
             $process = $this->db()->table('tugas')->where('id', $id)->update(['status' => $status]);
 
             if ($process) {
+                if ($status == 'done') {
+                    $detailPenerima = $this->db()->table('users')->where('id', $checkData->penerima_tugas_id)->first();
+                    // send notification
+                    $this->general->sendMessagePrivate($detailPenerima->email, 'Ada tugas yang telah diselesaikan!. Lihat detail tugas pada link ini '. ($_ENV['APP_FRONTEND_URL'] ?: $_SERVER['APP_FRONTEND_URL']) .'/#/task/detail/' . $id);
+                }
+
                 $result                 = ['status' => true, 'message' => 'Data berhasil diperbaharui'];
             }
         }
