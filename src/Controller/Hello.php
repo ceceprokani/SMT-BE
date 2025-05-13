@@ -52,4 +52,13 @@ final class Hello
 
         return JsonResponse::withJson($response, $result, 200);
     }
+
+    public function testEnv(Request $request, Response $response): Response
+    {
+        $result['status']   = true;
+        $result['message']  = "Data ditemukan";
+        $result['data']     = $_ENV ?? $_SERVER['APP_FRONTEND_URL'];
+
+        return JsonResponse::withJson($response, $result, 200);
+    }
 }
