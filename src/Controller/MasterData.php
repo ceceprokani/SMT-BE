@@ -27,7 +27,7 @@ final class MasterData
         $this->model                = new MasterDataModel($this->container->get('db'));
         $this->user                 = $this->auth->validateToken();
 
-        $roles                      = array('superadmin', 'admin');
+        $roles                      = array('superadmin', 'admin', 'staff');
 
         if(!in_array($this->user->role, $roles)) {
             $this->auth->denyAccess();
