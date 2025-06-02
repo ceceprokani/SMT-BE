@@ -170,6 +170,7 @@ final class TaskModel
                 if ($status == 'done') {
                     $checkDataPenerima = $this->db()->table('tugas_penerima')->where('id', $id)->first();
                     if (!empty($checkDataPenerima)) {
+                        $detailPengirim = $this->db()->table('users')->where('id', $checkData->user_id)->first();
                         $detailPenerima = $this->db()->table('users')->where('id', $checkDataPenerima->user_id)->first();
 
                         $date = $this->general->formatDate(date('Y-m-d H:i:s'), true);
@@ -182,7 +183,7 @@ final class TaskModel
                                                 "▪ *Status Tugas:* *Berhasil dikerjakan*\n" .
                                                 "🔍 <$link|Lihat Detail Tugas>";
                         // send notification
-                        $this->general->sendMessagePrivate($detailPenerima->email, $bodyMessage);
+                        $this->general->sendMessagePrivate($detailPengirim->email, $bodyMessage);
                     }
                 }
 
