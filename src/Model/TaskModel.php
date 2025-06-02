@@ -171,8 +171,18 @@ final class TaskModel
                     $checkDataPenerima = $this->db()->table('tugas_penerima')->where('id', $id)->first();
                     if (!empty($checkDataPenerima)) {
                         $detailPenerima = $this->db()->table('users')->where('id', $checkDataPenerima->user_id)->first();
+
+                        $date = $this->general->formatDate(date('Y-m-d H:i:s'), true);
+                        $link = ($_ENV['APP_FRONTEND_URL'] ?: $_SERVER['APP_FRONTEND_URL']) .'/#/task/detail/' . $id;
+                        
+                        $bodyMessage = $text = "📌 *Notifikasi Tugas Selesai*\n" .
+                                                "▪ *Deskripsi Tugas:* $checkData->deskripsi\n" .
+                                                "▪ *Diselesaikan oleh:* $checkDataPenerima->nama\n" .
+                                                "▪ *Tanggal & Waktu:* $date\n" .
+                                                "▪ *Status Tugas:* *Berhasil dikerjakan*\n" .
+                                                "🔍 <$link|Lihat Detail Tugas>";
                         // send notification
-                        $this->general->sendMessagePrivate($detailPenerima->email, 'Ada tugas yang telah diselesaikan!. Lihat detail tugas pada link ini '. ($_ENV['APP_FRONTEND_URL'] ?: $_SERVER['APP_FRONTEND_URL']) .'/#/task/detail/' . $id);
+                        $this->general->sendMessagePrivate($detailPenerima->email, $bodyMessage);
                     }
                 }
 
