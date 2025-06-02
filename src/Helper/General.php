@@ -72,7 +72,7 @@ final class General {
         if(empty($tampilkan_jam)) {
             return "$tanggal $bulan $tahun";
         } else {
-            return "$tanggal $bulan $tahun" . " " . $jam;
+            return "$tanggal $bulan $tahun" . ", " . $jam;
         }
     }
 
