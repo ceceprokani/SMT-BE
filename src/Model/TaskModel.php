@@ -242,7 +242,7 @@ final class TaskModel
     }
 
     public function saveDiscussion($taskId, $userId, $message) {
-        $result                 = ['status' => false, 'message' => 'Data gagal dihapus'];
+        $result                 = ['status' => false, 'message' => 'Data gagal disimpan'];
         $process = $this->db()->table('diskusi')->insert([
             'tugas_id' => $taskId,
             'user_id' => $userId,
@@ -251,7 +251,20 @@ final class TaskModel
         ]);
 
         if (!empty($process)) {
-            $result                 = ['status' => true, 'message' => 'Data berhasil dihapus'];
+            $detailTugas = $this->db()->table('tugas')->where('id', $taskId)->first();
+
+            if ($userId == $detailTugas->user_id) {
+                $detailUser = $this->db()->table('users')->where('id', $userId)->first();
+            } else {
+                $detailUser = $this->db()->table('users')->where('id', $detailTugas->user_id)->first();
+            }
+
+            // send notification
+            $bodyMessage =  "Ada komentar baru pada detail tugas berikut\n" .
+                            "🔗 <". ($_ENV['APP_FRONTEND_URL'] ?: $_SERVER['APP_FRONTEND_URL']) .'/#/task/detail/' . $taskId ."|Lihat Detail Tugas>";
+            $this->general->sendMessagePrivate($detailUser->email, $bodyMessage);
+            
+            $result                 = ['status' => true, 'message' => 'Data berhasil disimpan'];
         }
 
         return $result;
