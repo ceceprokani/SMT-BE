@@ -111,7 +111,7 @@ final class TaskModel
             'user_id' => $params['user_id'],
             'deskripsi' => $params['deskripsi'],
             'prioritas' => $params['prioritas'],
-            'deadline' => $params['deadline'],
+            'deadline' => str_replace('T', ' ', $params['deadline']),
             'catatan' => $params['catatan'],
         ];
 
