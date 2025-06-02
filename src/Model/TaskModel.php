@@ -177,7 +177,7 @@ final class TaskModel
                         
                         $bodyMessage = $text = "📌 *Notifikasi Tugas Selesai*\n" .
                                                 "▪ *Deskripsi Tugas:* $checkData->deskripsi\n" .
-                                                "▪ *Diselesaikan oleh:* $checkDataPenerima->nama\n" .
+                                                "▪ *Diselesaikan oleh:* $detailPenerima->nama\n" .
                                                 "▪ *Tanggal & Waktu:* $date\n" .
                                                 "▪ *Status Tugas:* *Berhasil dikerjakan*\n" .
                                                 "🔍 <$link|Lihat Detail Tugas>";
