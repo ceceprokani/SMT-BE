@@ -149,7 +149,16 @@ final class TaskModel
                                 "▪ *Prioritas:* *" . strtoupper($params['prioritas']) . "*\n" .
                                 "▪ *Deadline:* ". $this->general->formatDate($params['deadline'], true) ." WIB\n" .
                                 "🔗 <". ($_ENV['APP_FRONTEND_URL'] ?: $_SERVER['APP_FRONTEND_URL']) .'/#/task/detail/' . $lastId ."|Lihat Detail Tugas>";
-                $this->general->sendMessagePrivate($detailPenerima->email, $bodyMessage);
+                $this->general->sendMessagePrivate($detailPenerima->email, $bodyMessage); // kirim pesan ke penerima tugas secara langsung
+                // Cek apakah waktu reminder masih di masa yang akan datang
+                $bodyMessage = "🔔 *Pengingat Tugas*\n" .
+                                "▪ *Deskripsi Tugas:* " . $params['deskripsi'] . "\n" .
+                                "▪ *Deadline:* ". $this->general->formatDate($params['deadline'], true) ." WIB\n" .
+                                "🔗 <". ($_ENV['APP_FRONTEND_URL'] ?: $_SERVER['APP_FRONTEND_URL']) .'/#/task/detail/' . $lastId ."|Lihat Detail Tugas>";
+                $reminderTime = (strtotime($data['deadline']) - 86400) + 15;
+                if ($reminderTime > time()) {
+                    $this->general->sendMessagePrivateSchedule($detailPenerima->email, $bodyMessage, $reminderTime); // kirim pesan 1 hari sebelum deadline sebagai reminder
+                }
             }
 
             $result                 = ['status' => true, 'message' => 'Data berhasil disimpan'];
@@ -250,11 +259,12 @@ final class TaskModel
             'created_at' => date('Y-m-d H:i:s')
         ]);
 
-        if (!empty($process)) {
+        if ($process) {
             $detailTugas = $this->db()->table('tugas')->where('id', $taskId)->first();
 
             if ($userId == $detailTugas->user_id) {
-                $detailUser = $this->db()->table('users')->where('id', $userId)->first();
+                $detailPenerima = $this->db()->table('tugas_penerima')->where('tugas_id', $taskId)->first();
+                $detailUser = $this->db()->table('users')->where('id', $detailPenerima->user_id)->first();
             } else {
                 $detailUser = $this->db()->table('users')->where('id', $detailTugas->user_id)->first();
             }

@@ -135,6 +135,56 @@ final class General {
             }
         }
     }
+    public function sendMessagePrivateSchedule($email, $text, $time) {
+        $token = $_ENV['SLACK_KEY'] ?: $_SERVER['SLACK_KEY'];
+        // 1. Dapatkan user ID dari email
+        $ch = curl_init('https://slack.com/api/users.lookupByEmail?email=' . urlencode($email));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer $token",
+            "Content-Type: application/json"
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $user = json_decode($response, true);
+        $userId = $user['user']['id'];
+
+        // 2. Buka DM channel
+        $ch = curl_init('https://slack.com/api/conversations.open');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['users' => $userId]));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer $token",
+            "Content-Type: application/json"
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $dmChannel = json_decode($response, true);
+        $channelId = $dmChannel['channel']['id'];
+
+        // 3. Jadwalkan pesan
+        $payload = [
+            'channel' => $channelId,
+            'text' => $text,
+            'post_at' => $time
+        ];
+
+        $ch = curl_init('https://slack.com/api/chat.scheduleMessage');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: Bearer $token",
+            "Content-Type: application/json"
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($result, true);
+    }
 }
 
 ?>

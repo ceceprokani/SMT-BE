@@ -48,7 +48,11 @@ final class Hello
         $result['status']   = true;
         $result['message']  = "Data ditemukan";
         // $result['data']     = $this->general->sendNotificationToSlack('Halo dari Slim PHP 🎉 http://localhost:5173/#/task/detail/4');
-        $result['data']     = $this->general->sendMessagePrivate('cecepfahriazal1997@gmail.com', 'Hei ada task baru lhoo!!');
+        $result['data']     = $this->general->sendMessagePrivateSchedule(
+            'cecepfahriazal1997@gmail.com',
+            'Hei ada task baru lhoo 10 detik!!',
+            time() + 15,
+        );
 
         return JsonResponse::withJson($response, $result, 200);
     }
