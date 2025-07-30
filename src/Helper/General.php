@@ -41,7 +41,7 @@ final class General {
                 $baseUrl    = "$http" . $_SERVER['SERVER_NAME'] . "" . $newurl;
             }
         } else {
-            $baseUrl = $_ENV['APP_BASE_URL'] ?: $_SERVER['APP_BASE_URL'];
+            $baseUrl = $_ENV['APP_BASE_URL'] ?: $_SERVER['APP_BASE_URL'] . "/";
         }
         
         return $baseUrl.''.$extended_url;
