@@ -44,7 +44,7 @@ final class General {
             $baseUrl = $_ENV['APP_BASE_URL'] ?: $_SERVER['APP_BASE_URL'] . "/";
         }
         
-        return $baseUrl.''.$extended_url;
+        return $baseUrl.'/'.$extended_url;
     }
 
     public function formatDate($waktu, $tampilkan_jam = false)
