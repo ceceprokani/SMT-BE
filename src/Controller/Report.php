@@ -86,6 +86,10 @@ final class Report
             $view->addExtension(new IntlExtension());
         }
 
+        if ($this->user->role != 'superadmin') {
+            $params['user_id'] = $this->user->id;
+        }
+
         $list   = $this->model->list($params);
         $data           = [
             'data' => $list,
