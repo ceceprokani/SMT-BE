@@ -86,6 +86,7 @@ final class UserModel
                 'telepon' => $params['telepon'],
                 'jabatan_id' => $params['jabatan_id'],
                 'alamat' => $params['alamat'],
+                'status' => isset($params['status']) ? $params['status'] : 'active',
             ];
 
             if (!empty($params['password'])) {
