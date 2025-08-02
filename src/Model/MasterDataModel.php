@@ -28,7 +28,7 @@ final class MasterDataModel
     }
 
     public function listUser() {
-        $result = $this->db()->table('users')->select('id', 'nama')->where('role', 'staff')->orderBy('nama', 'asc')->get();
+        $result = $this->db()->table('users')->select('id', 'nama')->where('role', 'staff')->where('status', 'active')->orderBy('nama', 'asc')->get();
 
         return $result;
     }
