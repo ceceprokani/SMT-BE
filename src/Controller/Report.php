@@ -112,6 +112,6 @@ final class Report
         $mpdf->WriteHTML($htmlString);
         $mpdf->Output("LAPORAN.pdf","F");
 
-        return JsonResponse::withJson($response, ['url' => $this->general->baseUrl('LAPORAN.pdf')], 200);
+        return JsonResponse::withJson($response, ['url' => $this->general->baseUrl('LAPORAN.pdf?v=' . uniqid())], 200);
     }
 }
