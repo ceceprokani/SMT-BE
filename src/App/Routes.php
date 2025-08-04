@@ -25,6 +25,7 @@ $app->group('/user', function (RouteCollectorProxy $group) {
     $group->get('/info', 'App\Controller\User:info');
     $group->get('/profile', 'App\Controller\User:profile');
     $group->post('/profile/save', 'App\Controller\User:save');
+    $group->post('/profile/update', 'App\Controller\User:updateProfile');
     $group->post('/profile/change_password', 'App\Controller\User:change_password');
 });
 
@@ -53,6 +54,7 @@ $app->group('/master-data', function (RouteCollectorProxy $group) {
 /* --------------------------------------------------------------------------- */
 
 /* ------------------------------ Super Admin Routes ------------------------------ */
+$app->post('/manage-user/change-password', [ManageUser::class, 'changePassword']);
 routes($app, 'manage-user', ManageUser::class);
 
 $app->get('/dashboard/statistic', [Dashboard::class, 'statistic']);

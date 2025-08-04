@@ -143,4 +143,39 @@ final class UserModel
 
         return $result;
     }
+
+    public function updateProfile($id, $name, $phone, $address) {
+        $data = [
+                'nama' => $name,
+                'telepon' => $phone,
+                'alamat' => $address,
+        ];
+        $result = ['status' => false, 'message' => 'Gagal memperbarui profil.'];
+        $process = $this->db()->table('users')
+            ->where('id', $id)
+            ->update($data);
+        if ($process) {
+            $result = ['status' => true, 'message' => 'Profil berhasil diperbarui.', 'data' => [
+                'name' => $name,
+                'phone' => $phone,
+                'address' => $address,
+            ]];
+        }
+        return $result;
+    }
+
+    public function updatePassword($id, $password) {
+        $data = [
+            'password' => password_hash($password, PASSWORD_BCRYPT),
+            'password_raw' => $password,
+        ];
+        $result = ['status' => false, 'message' => 'Gagal memperbarui password.'];
+        $process = $this->db()->table('users')
+            ->where('id', $id)
+            ->update($data);
+        if ($process) {
+            $result = ['status' => true, 'message' => 'Password berhasil diperbarui.'];
+        }
+        return $result;
+    }
 }

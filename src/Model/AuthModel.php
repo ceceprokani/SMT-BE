@@ -111,6 +111,7 @@ final class AuthModel
             $message = "Username atau Password tidak boleh kosong.";
         } else {
             $getData = $this->db()->table('users');
+            $getData->where('status', '=', 'active');
             $getData->where(function ($relation) use ($username) {
                 $relation->orWhere($relation->raw('lower(username)'), '=', strtolower($username));
             });

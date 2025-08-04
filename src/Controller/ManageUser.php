@@ -89,4 +89,26 @@ final class ManageUser
         $result = $this->userModel->deleteBatch($request->getParsedBody());
         return JsonResponse::withJson($response, $result, 200);
     }
+
+    public function changePassword(Request $request, Response $response): Response
+    {
+        $post                       = $request->getParsedBody();
+        $id                         = isset($post["id"]) ? $post["id"] : '';
+        $password                   = isset($post["password"]) ? $post["password"] : '';
+        $confirmPassword            = isset($post["confirmPassword"]) ? $post["confirmPassword"] : '';
+
+        $result['status']   = false;
+        $result['message'] = 'Gagal mengubah password';
+
+        if ($password == $confirmPassword) {
+            $process            = $this->userModel->updatePassword($id, $password);
+
+            if ($process) {
+                $result['status']   = true;
+                $result['message'] = 'Password berhasil diubah';
+            }
+        }
+
+        return JsonResponse::withJson($response, $result, 200);
+    }
 }

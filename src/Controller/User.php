@@ -40,6 +40,16 @@ final class User
         $result['status']   = true;
         $result['data']     = $this->user;
 
+        $detailUser = $this->userModel->detail($this->user->id);
+        if ($detailUser) {
+            $result['data'] = array_merge((array)$result['data'], [
+                'name' => $detailUser->nama,
+                'email' => $detailUser->email,
+                'phone' => $detailUser->telepon,
+                'address' => $detailUser->alamat,
+            ]);
+        }
+
         return JsonResponse::withJson($response, $result, 200);
     }
 
@@ -56,6 +66,18 @@ final class User
             $result['data']     = $this->userModel->updatePassword($this->user->id, $new_password);
         }
 
+
+        return JsonResponse::withJson($response, $result, 200);
+    }
+
+    public function updateProfile(Request $request, Response $response): Response
+    {
+        $post                       = $request->getParsedBody();
+        $name                       = isset($post["name"]) ? $post["name"] : '';
+        $phone                      = isset($post["phone"]) ? $post["phone"] : '';
+        $address                    = isset($post["address"]) ? $post["address"] : '';
+
+        $result = $this->userModel->updateProfile($this->user->id, $name, $phone, $address);
 
         return JsonResponse::withJson($response, $result, 200);
     }
