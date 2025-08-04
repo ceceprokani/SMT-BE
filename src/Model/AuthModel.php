@@ -161,6 +161,41 @@ final class AuthModel
         return $result;
     }
 
+    public function validatePassword($id = "", $password = "")
+    {
+        $loginstatus = false;
+        if(empty($password)) {
+            $message = "Username atau Password tidak boleh kosong.";
+        } else {
+            $getData = $this->db()->table('users');
+            $getData->where('status', '=', 'active');
+            $getData->where('id', '=', $id);
+
+            $getUser    = $getData->first();
+
+            if(empty($getUser->id)) {
+                $message    = "User tidak ditemukan.";
+            } else {
+                $isAllow    = true;
+            }
+
+            if($isAllow) {
+                // check if using newer hash (general user)
+                if (password_verify($password, $getUser->password)) {
+                    $loginstatus = true;
+                }
+
+                // check if using cleartext (general user)
+                if ($password == $getUser->password) {
+                    $loginstatus = true;
+                    $updatehash  = true;
+                }
+            }
+        }
+
+        return $loginstatus;
+    }
+
     public function generateToken($id = "", $username = "", $name = "", $role = "")
     {
         $tokenBuilder = (new Builder(new JoseEncoder(), ChainedFormatter::default()));

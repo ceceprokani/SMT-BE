@@ -28,7 +28,7 @@ final class UserModel
 
     public function buildQueryList($params=null) {
         $getQuery = $this->db()->table('users');
-        $getQuery->select($getQuery->raw('users.*, jabatan.nama as jabatan'));
+        $getQuery->select($getQuery->raw('users.id, users.nama, users.email, users.telepon, users.status, jabatan.nama as jabatan'));
         $getQuery->where('users.role', '!=', 'superadmin');
         $getQuery->leftJoin('jabatan', 'jabatan.id', '=', 'users.jabatan_id');
         
@@ -60,9 +60,9 @@ final class UserModel
         return ['data' => $list, 'total' => $totalData];
     }
 
-    public function detail($id) {
+    public function detail($id, $withPassword = false) {
         $result = $this->db()->table('users')
-                    ->select($this->db()->raw('id, nama, email, telepon, jabatan_id, alamat, status'))
+                    ->select($this->db()->raw('id, nama, email, telepon, jabatan_id, alamat, status'.($withPassword ? ', password, password_raw' : '')))
                     ->where('id', $id)
                     ->first();
 

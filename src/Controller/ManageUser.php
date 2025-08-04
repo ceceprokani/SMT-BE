@@ -111,4 +111,22 @@ final class ManageUser
 
         return JsonResponse::withJson($response, $result, 200);
     }
+
+    public function showPassword(Request $request, Response $response): Response
+    {
+        $params = $request->getParsedBody();
+        $result = ['status' => false, 'message' => 'Data tidak ditemukan', 'data' => array()];
+
+        $validatePassword = $this->auth->validatePassword($this->user->id, $params['password']);
+        if ($validatePassword) {
+            $data   = $this->userModel->detail($params['id'], true);
+            if (!empty($data)) {
+                $result = ['status' => true, 'message' => 'Data berhasil ditemukan', 'data' => $data];
+            }
+        } else {
+            $result = ['status' => false, 'message' => 'Password yang dimasukkan salah', 'data' => array()];
+        }
+
+        return JsonResponse::withJson($response, $result, 200);
+    }
 }

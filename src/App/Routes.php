@@ -54,6 +54,7 @@ $app->group('/master-data', function (RouteCollectorProxy $group) {
 /* --------------------------------------------------------------------------- */
 
 /* ------------------------------ Super Admin Routes ------------------------------ */
+$app->post('/manage-user/show-password', [ManageUser::class, 'showPassword']);
 $app->post('/manage-user/change-password', [ManageUser::class, 'changePassword']);
 routes($app, 'manage-user', ManageUser::class);
 
