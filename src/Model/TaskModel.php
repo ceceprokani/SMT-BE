@@ -265,12 +265,16 @@ final class TaskModel
             if ($userId == $detailTugas->user_id) {
                 $detailPenerima = $this->db()->table('tugas_penerima')->where('tugas_id', $taskId)->first();
                 $detailUser = $this->db()->table('users')->where('id', $detailPenerima->user_id)->first();
+                $detailUserPenerima = $this->db()->table('users')->where('id', $detailTugas->user_id)->first();
             } else {
                 $detailUser = $this->db()->table('users')->where('id', $detailTugas->user_id)->first();
+                $detailUserPenerima = $this->db()->table('users')->where('id', $userId)->first();
             }
 
             // send notification
-            $bodyMessage =  "Ada komentar baru pada detail tugas berikut\n" .
+            $bodyMessage =  "Notifikasi Komentar Baru\n" .
+                            "Tugas : " . $detailTugas->deskripsi . "\n" .
+                            "Komentar dari: " . $detailUserPenerima->nama . "\n" .
                             "🔗 <". ($_ENV['APP_FRONTEND_URL'] ?: $_SERVER['APP_FRONTEND_URL']) .'/#/task/detail/' . $taskId ."|Lihat Detail Tugas>";
             $this->general->sendMessagePrivate($detailUser->email, $bodyMessage);
             
