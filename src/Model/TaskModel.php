@@ -143,7 +143,7 @@ final class TaskModel
                 $detalPemberiTugas = $this->db()->table('users')->where('id', $params['user_id'])->first();
                 $detailPenerima = $this->db()->table('users')->where('id', $params['penerima_tugas_id'])->first();
                 // send notification
-                $bodyMessage =  "📌 *Notifikasi Tugas Baru*\n" .
+                $bodyMessage =  "📌 " . (!empty($params['tugas_detail_id'])) ? "Notifikasi Tugas Diperbarui\n" : "Notifikasi Tugas Baru\n" .
                                 "▪ *Pemberi Tugas:* " . $detalPemberiTugas->nama . "\n" .
                                 "▪ *Deskripsi Tugas:* " . $params['deskripsi'] . "\n" .
                                 "▪ *Prioritas:* *" . strtoupper($params['prioritas']) . "*\n" .
