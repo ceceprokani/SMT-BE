@@ -24,7 +24,7 @@ final class ManageUser
     {
         $this->container = $container;
         $this->auth                 = new AuthModel($this->container->get('db'));
-        $this->userModel            = new UserModel($this->container->get('db'));
+        $this->userModel            = new UserModel($this->container);
         $this->user                 = $this->auth->validateToken();
 
         $roles                      = array('superadmin', 'admin');

@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Exception;
+use Pimple\Psr11\Container;
+
+use App\Helper\General;
 
 final class UserModel
 {
@@ -16,9 +19,10 @@ final class UserModel
         return $pdo;
     }
 
-    public function __construct(\Pecee\Pixie\Connection $database)
+    public function __construct(Container $container)
     {
-        $this->database       = $database;
+        $this->database         = $container->get('db');
+        $this->general          = new General($container);
     }
 
     public function countUser()
@@ -62,7 +66,7 @@ final class UserModel
 
     public function detail($id, $withPassword = false) {
         $result = $this->db()->table('users')
-                    ->select($this->db()->raw('id, nama, email, telepon, jabatan_id, alamat, status'.($withPassword ? ', password, password_raw' : '')))
+                    ->select($this->db()->raw('id, nama, email, telepon, jabatan_id, alamat, has_password_updated, status'.($withPassword ? ', password, password_raw' : '')))
                     ->where('id', $id)
                     ->first();
 
@@ -99,6 +103,17 @@ final class UserModel
             if (empty($params['id'])) {
                 $dataUser = array_merge(['created_at' => date('Y-m-d H:i:s')], $dataUser);
                 $process = $this->db()->table('users')->insert($dataUser);
+
+                if ($process) {
+                    // mengirim pesan slack informasi akun login
+                    $bodyMessage =  "👋 *Halo " . $dataUser['nama'] . "*\n" .
+                                    "*Berikut adalah informasi akun Anda:*\n\n" .
+                                    "*Username:* " . $params['email'] . "\n" .
+                                    "*Password:* " . $params['password'] . "\n\n" .
+                                    "*Demi keamanan, harap segera login dan mengganti password Anda melalui halaman profil. Jangan membagikan password ini kepada siapapun*\n" .
+                                    "*Terima kasih*\n";
+                    $this->general->sendMessagePrivate($params['email'], $bodyMessage);
+                }
             } else {
                 $process = $params['id'];
                 $this->db()->table('users')->where('id', $params['id'])->update($dataUser);
@@ -164,16 +179,26 @@ final class UserModel
         return $result;
     }
 
-    public function updatePassword($id, $password) {
+    public function updatePassword($id, $password, $hasPasswordUpdatedByUser = 0) {
         $data = [
             'password' => password_hash($password, PASSWORD_BCRYPT),
             'password_raw' => $password,
+            'has_password_updated' => $hasPasswordUpdatedByUser
         ];
         $result = ['status' => false, 'message' => 'Gagal memperbarui password.'];
+        $detailUser = $this->db()->table('users')->where('id', $id)->first();
         $process = $this->db()->table('users')
             ->where('id', $id)
             ->update($data);
         if ($process) {
+            // mengirim pesan slack informasi akun login
+            $bodyMessage =  "👋 *Halo " . $detailUser->nama . "*\n" .
+                            "*Berikut adalah informasi akun Anda:*\n\n" .
+                            "*Username:* " . $detailUser->email . "\n" .
+                            "*Password:* " . $password . "\n\n" .
+                            "*Demi keamanan, harap segera login dan mengganti password Anda melalui halaman profil. Jangan membagikan password ini kepada siapapun*\n" .
+                            "*Terima kasih*\n";
+            $this->general->sendMessagePrivate($detailUser->email, $bodyMessage);
             $result = ['status' => true, 'message' => 'Password berhasil diperbarui.'];
         }
         return $result;

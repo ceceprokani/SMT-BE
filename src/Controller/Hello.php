@@ -21,7 +21,7 @@ final class Hello
     public function __construct(Container $container)
     {
         $this->container    = $container;
-        $this->userModel    = new UserModel($this->container->get('db'));
+        $this->userModel    = new UserModel($this->container);
         $this->general      = new General($this->container);
     }
 

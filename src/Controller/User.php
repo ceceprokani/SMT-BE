@@ -32,7 +32,7 @@ final class User
             $this->auth->denyAccess();
         }
 
-        $this->userModel            = new UserModel($this->container->get('db'));
+        $this->userModel            = new UserModel($this->container);
     }
 
     public function info(Request $request, Response $response): Response
@@ -47,6 +47,7 @@ final class User
                 'email' => $detailUser->email,
                 'phone' => $detailUser->telepon,
                 'address' => $detailUser->alamat,
+                'has_password_updated' => $detailUser->has_password_updated
             ]);
         }
 
@@ -60,7 +61,7 @@ final class User
         $confirm_password           = isset($post["confirm_password"]) ? $post["confirm_password"] : '';
 
         if ($new_password == $confirm_password) {
-            $result     = $this->userModel->updatePassword($this->user->id, $new_password);
+            $result     = $this->userModel->updatePassword($this->user->id, $new_password, 1);
         }
 
 
