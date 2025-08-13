@@ -59,11 +59,8 @@ final class User
         $new_password               = isset($post["new_password"]) ? $post["new_password"] : '';
         $confirm_password           = isset($post["confirm_password"]) ? $post["confirm_password"] : '';
 
-        $result['status']   = false;
-
         if ($new_password == $confirm_password) {
-            $result['status']   = true;
-            $result['data']     = $this->userModel->updatePassword($this->user->id, $new_password);
+            $result     = $this->userModel->updatePassword($this->user->id, $new_password);
         }
 
 

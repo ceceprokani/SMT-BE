@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Slim\Routing\RouteCollectorProxy;
 
 use App\Controller\{
+    User,
     Dashboard,
     MasterData,
     ManageUser,
@@ -22,11 +23,12 @@ $app->post('/auth/signin', 'App\Controller\Auth:signin')->setName('signin');
 
 // Users Routes
 $app->group('/user', function (RouteCollectorProxy $group) {
-    $group->get('/info', 'App\Controller\User:info');
-    $group->get('/profile', 'App\Controller\User:profile');
-    $group->post('/profile/save', 'App\Controller\User:save');
-    $group->post('/profile/update', 'App\Controller\User:updateProfile');
-    $group->post('/profile/change_password', 'App\Controller\User:change_password');
+    $group->get('/info', [User::class, 'info']);
+    $group->get('/profile', [User::class, 'profile']);
+    $group->post('/profile/save', [User::class, 'save']);
+    $group->post('/profile/update', [User::class, 'updateProfile']);
+    $group->post('/profile/change_password', [User::class, 'change_password']);
+    $group->post('/change-password', [User::class, 'changePassword']);
 });
 
 function routes($app, $url, $controller): void {
