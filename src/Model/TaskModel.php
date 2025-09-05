@@ -143,12 +143,13 @@ final class TaskModel
                 $detalPemberiTugas = $this->db()->table('users')->where('id', $params['user_id'])->first();
                 $detailPenerima = $this->db()->table('users')->where('id', $params['penerima_tugas_id'])->first();
                 // send notification
-                $bodyMessage =  "📌 " . (!empty($params['tugas_detail_id'])) ? "Notifikasi Tugas Diperbarui\n" : "Notifikasi Tugas Baru\n" .
+                $bodyMessage =  "📌 " . ((!empty($params['id'])) ? "Notifikasi Tugas Diperbarui\n" : "Notifikasi Tugas Baru\n") .
                                 "▪ *Pemberi Tugas:* " . $detalPemberiTugas->nama . "\n" .
                                 "▪ *Deskripsi Tugas:* " . $params['deskripsi'] . "\n" .
                                 "▪ *Prioritas:* *" . strtoupper($params['prioritas']) . "*\n" .
                                 "▪ *Deadline:* ". $this->general->formatDate($params['deadline'], true) ." WIB\n" .
                                 "🔗 <". ($_ENV['APP_FRONTEND_URL'] ?: $_SERVER['APP_FRONTEND_URL']) .'/#/task/detail/' . $lastId ."|Lihat Detail Tugas>";
+
                 $this->general->sendMessagePrivate($detailPenerima->email, $bodyMessage); // kirim pesan ke penerima tugas secara langsung
                 // Cek apakah waktu reminder masih di masa yang akan datang
                 $bodyMessage = "🔔 *Pengingat Tugas*\n" .

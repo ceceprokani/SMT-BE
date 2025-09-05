@@ -47,7 +47,7 @@ final class User
                 'email' => $detailUser->email,
                 'phone' => $detailUser->telepon,
                 'address' => $detailUser->alamat,
-                'has_password_updated' => $detailUser->has_password_updated
+                'has_password_updated' => $this->user->role == 'superadmin' ? '1' : $detailUser->has_password_updated
             ]);
         }
 
